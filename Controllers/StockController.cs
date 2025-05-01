@@ -48,6 +48,31 @@ public IActionResult Create([FromBody] CreateStockRequestDto stockDto){
 
 
 [HttpPut("{id}")]
-public IActionResult Update([FromRoute] )
+public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto){
+   var stockModel=_context.Stock.FirstOrDefault(x=> x.Id==id);
+    if(stockModel==null){
+      return NotFound();
+    }
+    stockModel.Symbol=updateDto.Symbol;
+    stockModel.CompanyName=updateDto.CompanyName;
+    stockModel.Purchase=updateDto.Purchase;
+    stockModel.LastDiv=updateDto.LastDiv;
+    stockModel.Industry=updateDto.Industry;
+    stockModel.MarketCap=updateDto.MarketCap;
+    _context.Stock.Update(stockModel);
+    _context.SaveChanges();
+    return Ok(stockModel.ToStockDto());
+
+}
+[HttpDelete("{id}")]
+public IActionResult Delete ([FromRoute] int id){
+   var stockModel=_context.Stock.FirstOrDefault(x=> x.Id==id);
+    if(stockModel==null){
+      return NotFound();
+    }
+    _context.Stock.Remove(stockModel);
+    _context.SaveChanges();
+    return NoContent();
+}
 }
 }
